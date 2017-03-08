@@ -7,7 +7,7 @@ import java.net.Socket;
 public class ReceiveCommandsThread extends ReceiverThread {
     private final int port;
     private final int timeout;
-    private byte i = 0;
+    private static byte runningNumber = 0;
 
     ReceiveCommandsThread(int port, int timeout, Listener listener) {
         super(listener);
@@ -47,13 +47,21 @@ public class ReceiveCommandsThread extends ReceiverThread {
                 //parse
                 byte speed = buffer[0];
                 byte steering = buffer[1];
-                System.out.println(TAG + "Received new data: speed = " + speed + " steering = " + steering + "   " + i++);
+                System.out.println(TAG + "Received new data: speed = " + speed + " steering = " + steering + "    " + getNumber());
                 update(speed, steering);
             }
         } catch (Exception e) {
             System.out.println("\n\n" + TAG + "Connection to app lost because of " + e.getMessage());
             update((byte) 50, (byte) 50);//Domi: default value changed because of "TrackedRover" Prototype that has a Reverse Gear.
             util.close(socket);
+        }
+    }
+    private byte getNumber()
+    {
+        if(runningNumber > 8){
+            return runningNumber = 0;
+        }else {
+            return ++runningNumber;
         }
     }
 }

@@ -10,7 +10,7 @@ public class SendCommandsThread extends Thread {
 
     private final int port;
     private final int timeout;
-
+    private byte runningNumber = 0;
     private byte speed = 0, steering = 50;
 
     SendCommandsThread(int port, int timeout) {
@@ -46,7 +46,7 @@ public class SendCommandsThread extends Thread {
                 sendData[1] = steering;
 
                 socket.getOutputStream().write(sendData);
-                System.out.println(TAG + "Sending data to Rover: speed = " + speed + " steering = " + steering);
+                System.out.println(TAG + "Sending data to Rover: speed = " + speed + " steering = " + steering + "  " + getNumber());
                 socket.getInputStream().read();
 
                 if (!interrupted()) util.sleep(1000);
@@ -61,5 +61,13 @@ public class SendCommandsThread extends Thread {
         this.speed = speed;
         this.steering = steering;
         this.interrupt();
+    }
+    private byte getNumber()
+    {
+        if(runningNumber > 8){
+            return runningNumber = 0;
+        }else {
+            return ++runningNumber;
+        }
     }
 }
