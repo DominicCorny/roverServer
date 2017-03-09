@@ -24,19 +24,23 @@ public class SendCommandsThread extends Thread {
     public void run() {
         try (ServerSocket serverSocket = new ServerSocket(port, 1)) {
             while (true) {
-                System.out.println(TAG + "Try to connect to rover");
-                Socket socket = serverSocket.accept();
-                socket.setTcpNoDelay(true);
-                socket.setSoTimeout(timeout);
-                //test connection
-                socket.getOutputStream().write(1);
-                if (socket.getInputStream().read() != 1) throw new IOException("read error");
-                System.out.println(TAG + "Succesfully connected to rover");
-
-                sender = new Sender(socket);
-                sender.start();
-                while (true) {
+                try {
+                    System.out.println(TAG + "Try to connect to rover");
+                    Socket socket = serverSocket.accept();
+                    socket.setTcpNoDelay(true);
+                    socket.setSoTimeout(timeout);
+                    //test connection
+                    socket.getOutputStream().write(1);
                     if (socket.getInputStream().read() != 1) throw new IOException("read error");
+                    System.out.println(TAG + "Succesfully connected to rover");
+
+                    sender = new Sender(socket);
+                    sender.start();
+                    while (true) {
+                        if (socket.getInputStream().read() != 1) throw new IOException("read error");
+                    }
+                } catch (IOException e) {
+                    System.out.println("\n\n" + TAG + "Connection to rover lost because of " + e.getMessage());
                 }
             }
         } catch (IOException e) {
