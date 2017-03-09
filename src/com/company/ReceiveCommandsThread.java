@@ -42,26 +42,19 @@ public class ReceiveCommandsThread extends ReceiverThread {
 
                 //receive
                 int readCount = socket.getInputStream().read(buffer);
-                if (readCount < 2) break;//not expected
+                if (readCount < 2) throw new IOException("Read error");//not expected
 
                 //parse
                 byte speed = buffer[0];
                 byte steering = buffer[1];
-                System.out.println(TAG + "Received new data: speed = " + speed + " steering = " + steering + "    " + getNumber());
+                System.out.println(TAG + "Received new data: speed = " + speed + " steering = " + steering + '\t' + runningNumber++%10);
                 update(speed, steering);
             }
         } catch (Exception e) {
             System.out.println("\n\n" + TAG + "Connection to app lost because of " + e.getMessage());
             update((byte) 50, (byte) 50);//Domi: default value changed because of "TrackedRover" Prototype that has a Reverse Gear.
             util.close(socket);
-        }
-    }
-    private byte getNumber()
-    {
-        if(runningNumber > 8){
-            return runningNumber = 0;
-        }else {
-            return ++runningNumber;
+            util.sleep(100);
         }
     }
 }
