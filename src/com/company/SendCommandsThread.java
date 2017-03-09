@@ -10,14 +10,15 @@ public class SendCommandsThread extends Thread {
 
     private final int port;
     private final int timeout;
-    private byte runningNumber = 0;
-    private byte speed = 0, steering = 50;
+    private int runningNumber = 0;
+    private byte [] sendData;
+    private Sender sender;
 
     SendCommandsThread(int port, int timeout) {
         this.port = port;
         this.timeout = timeout;
+        sendData = new byte[2];
     }
-
 
     @Override
     public void run() {
@@ -25,10 +26,18 @@ public class SendCommandsThread extends Thread {
             while (true) {
                 System.out.println(TAG + "Try to connect to rover");
                 Socket socket = serverSocket.accept();
-                System.out.println(TAG + "Succesfully connected to rover");
                 socket.setTcpNoDelay(true);
                 socket.setSoTimeout(timeout);
-                sendLoop(socket);
+                //test connection
+                socket.getOutputStream().write(1);
+                if (socket.getInputStream().read() != 1) throw new IOException("read error");
+                System.out.println(TAG + "Succesfully connected to rover");
+
+                sender = new Sender(socket);
+                sender.start();
+                while (true) {
+                    if (socket.getInputStream().read() != 1) throw new IOException("read error");
+                }
             }
         } catch (IOException e) {
             System.out.print("WTF? Should not have happened.");
@@ -37,37 +46,32 @@ public class SendCommandsThread extends Thread {
         }
     }
 
-    private void sendLoop(Socket socket) {
-        byte[] sendData = new byte[2];
+    private class Sender extends Thread {
+        private Socket socket;
 
-        try {
-            while (true) {
-                sendData[0] = speed;
-                sendData[1] = steering;
+        Sender(Socket socket) {
+            this.socket = socket;
+        }
 
-                socket.getOutputStream().write(sendData);
-                System.out.println(TAG + "Sending data to Rover: speed = " + speed + " steering = " + steering + "  " + getNumber());
-                socket.getInputStream().read();
-
-                if (!interrupted()) util.sleep(1000);
+        @Override
+        public void run() {
+            try {
+                while (true) {
+                    socket.getOutputStream().write(sendData);
+                    System.out.println(TAG + "Sending data to Rover: speed = " + sendData[0] + " steering = " + sendData[1] + '\t' + runningNumber++ % 10);
+                    if (!interrupted()) util.sleep(250);
+                }
+            } catch (Exception e) {
+                util.close(socket);
             }
-        } catch (Exception e) {
-            System.out.println("\n\n" + TAG + "Connection to Rover lost because of " + e.getMessage());
-            util.close(socket);
         }
     }
 
     void newData(byte speed, byte steering) {
-        this.speed = speed;
-        this.steering = steering;
-        this.interrupt();
-    }
-    private byte getNumber()
-    {
-        if(runningNumber > 8){
-            return runningNumber = 0;
-        }else {
-            return ++runningNumber;
+        sendData[0]= speed;
+        sendData[1] = steering;
+        if(sender != null) {
+            sender.interrupt();
         }
     }
 }
