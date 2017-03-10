@@ -3,6 +3,8 @@ package com.company;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class SendCommandsThread extends Thread {
@@ -10,14 +12,17 @@ public class SendCommandsThread extends Thread {
 
     private final int port;
     private final int timeout;
-    private int runningNumber = 0;
     private byte [] sendData;
     private Sender sender;
+    private SimpleDateFormat time;
 
     SendCommandsThread(int port, int timeout) {
         this.port = port;
         this.timeout = timeout;
         sendData = new byte[2];
+        sendData[0] = 50;//Default value for robot with reverse Funktion
+        sendData[1] = 50;//please dont remove
+        time = new SimpleDateFormat("HH:mm:ss");
     }
 
     @Override
@@ -62,7 +67,7 @@ public class SendCommandsThread extends Thread {
             try {
                 while (true) {
                     socket.getOutputStream().write(sendData);
-                    System.out.println(TAG + "Sending data to Rover: speed = " + sendData[0] + " steering = " + sendData[1] + '\t' + runningNumber++ % 10);
+                    System.out.println(TAG + "Sending data to Rover: speed = " + sendData[0] + " steering = " + sendData[1] + '\t' + time.format(new Date()));
                     if (!interrupted()) util.sleep(250);
                 }
             } catch (Exception e) {

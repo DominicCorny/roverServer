@@ -3,16 +3,19 @@ package com.company;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ReceiveCommandsThread extends ReceiverThread {
     private final int port;
     private final int timeout;
-    private int runningNumber = 0;
+    private SimpleDateFormat time;
 
     ReceiveCommandsThread(int port, int timeout, Listener listener) {
         super(listener);
         this.port = port;
         this.timeout = timeout;
+        time = new SimpleDateFormat("HH:mm:ss");
     }
 
     @Override
@@ -47,7 +50,7 @@ public class ReceiveCommandsThread extends ReceiverThread {
                 int readCount = socket.getInputStream().read(buffer);
                 if (readCount < 2) throw new IOException("Read error");
                 //notify send thread
-                System.out.println(TAG + "Received new data: speed = " + buffer[0] + " steering = " + buffer[1] + '\t' + runningNumber++ % 10);
+                System.out.println(TAG + "Received new data: speed = " + buffer[0] + " steering = " + buffer[1] + '\t' + time.format(new Date()));
                 update(buffer[0], buffer[1]);
             }
         } catch (Exception e) {
