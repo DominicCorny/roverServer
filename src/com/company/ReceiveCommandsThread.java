@@ -25,7 +25,7 @@ public class ReceiveCommandsThread extends ReceiverThread {
                 socket.setSoTimeout(timeout);
                 //test connection
                 socket.getOutputStream().write(1);
-                //if (socket.getInputStream().read() != 1) throw new IOException("read error"); //Domi: hier wird auch im normalen betrieb eine exception geworfen durch ausklommentieren hat es wieder funktioniert
+                if (socket.getInputStream().read() != 1) throw new IOException("read error");
                 System.out.println(TAG + "Succesfully connected to app");
 
                 receiveLoop(socket);
