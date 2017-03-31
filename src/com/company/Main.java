@@ -9,7 +9,7 @@ public class Main {
     private static ReceiverThread receiverThread;
 
     public static void main(String[] args) throws IOException {
-        System.out.println("SERVER: Start");
+        Util.println("SERVER: Start");
 
         senderThread = new SendCommands(3841, 1000);
         senderThread.start();

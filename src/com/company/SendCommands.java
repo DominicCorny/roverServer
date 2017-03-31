@@ -22,7 +22,7 @@ class SendCommands {
         } catch (IOException e) {
             System.out.print("WTF? Should not have happened.");
             e.printStackTrace();
-            Util2.close(socket);
+            Util.close(socket);
             System.exit(-1);
         }
         receiverThread = new ReceiverThread();
@@ -39,17 +39,17 @@ class SendCommands {
             DatagramPacket packet = new DatagramPacket(new byte[6], 6);
 
             while (true) {
-                if (ping == -1) System.out.println(TAG + "Try to connect to rover");
+                if (ping == -1) Util.println(TAG + "Try to connect to rover");
                 try {
                     socket.receive(packet);
                     if (ping == -1) {
                         roverAddress = (InetSocketAddress) packet.getSocketAddress();//this is the address we will send the data to
                         if (!senderThread.isAlive()) senderThread.start();//start the senderThread if the senderThread is not running
                     }
-                    ping = ((int) System.currentTimeMillis()) - Util2.readInt(packet.getData(), 2);
+                    ping = ((int) System.currentTimeMillis()) - Util.readInt(packet.getData(), 2);
                 } catch (Exception e) {
                     if (ping >= 0)
-                        System.out.println("\n" + TAG + "Connection to rover lost because of " + e.getMessage());
+                        Util.println("\n" + TAG + "Connection to rover lost because of " + e.getMessage());
                     ping = -1;
                 }
             }
@@ -68,13 +68,13 @@ class SendCommands {
             while (true) {
                 try {
                     packet.setSocketAddress(roverAddress);
-                    System.out.println(TAG + "Sending data to Rover: speed = " + packet.getData()[0] + " steering = " + packet.getData()[1]);
-                    Util2.putInt((int) System.currentTimeMillis(), packet.getData(), 2);
+                    Util.println(TAG + "Sending data to Rover: speed = " + packet.getData()[0] + " steering = " + packet.getData()[1]);
+                    Util.putInt((int) System.currentTimeMillis(), packet.getData(), 2);
                     socket.send(packet);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if (!interrupted()) Util2.sleep(50);
+                if (!interrupted()) Util.sleep(50);
             }
         }
 

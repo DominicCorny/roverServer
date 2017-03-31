@@ -18,16 +18,16 @@ class ConsoleControlThread extends ReceiverThread {
             try {
                 int ping = getPingToRover();
                 if (ping >= 0) {
-                    System.out.println(TAG + "Ping: " + ping);
+                    Util.println(TAG + "Ping: " + ping);
                 }
-                System.out.println(TAG + "Gib die Geschwindigkeit ein (0-100)");
+                Util.println(TAG + "Gib die Geschwindigkeit ein (0-100)");
                 speed = scanner.nextByte();
-                System.out.println(TAG + "Gib die Lenkung ein (0-100)");
+                Util.println(TAG + "Gib die Lenkung ein (0-100)");
                 steering = scanner.nextByte();
 
                 update(speed, steering);
             } catch (Exception e) {
-                System.out.println(TAG + e.getMessage());
+                Util.println(TAG + e.getMessage());
             }
         }
     }

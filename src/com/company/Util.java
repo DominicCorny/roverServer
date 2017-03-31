@@ -2,8 +2,12 @@ package com.company;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-class Util2 {
+class Util {
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd HH:mm:ss:SSS");
+    private static Date date = new Date();
 
     static void close(Closeable closeable) {
         if (closeable != null) {
@@ -33,5 +37,10 @@ class Util2 {
                 (value[1 + offset] & 255) << 16 |
                 (value[2 + offset] & 255) << 8 |
                 value[3 + offset] & 255;
+    }
+
+    static void println(String s) {
+        date.setTime(System.currentTimeMillis());
+        System.out.println(dateFormat.format(date) + '\t' + s);
     }
 }

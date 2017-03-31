@@ -17,7 +17,7 @@ public class ReceiveCommandsThread extends ReceiverThread {
         } catch (IOException e) {
             System.out.print("WTF? Should not have happened.");
             e.printStackTrace();
-            Util2.close(socket);
+            Util.close(socket);
             System.exit(-1);
         }
     }
@@ -29,20 +29,21 @@ public class ReceiveCommandsThread extends ReceiverThread {
         boolean connected = false;
 
         while (true) {
-            if (!connected) System.out.println(TAG + "Try to connect to app");
+            if (!connected) Util.println(TAG + "Try to connect to app");
             try {
                 socket.receive(packet);
                 connected = true;
-                System.out.println(TAG + "Received new data: speed = " + data[0] + " steering = " + data[1]);
+
+                Util.println(TAG + "Received new data: speed = " + data[0] + " steering = " + data[1]);
                 update(data[0], data[1]);
 
-                Util2.putInt(getPingToRover(), data, 6);
+                Util.putInt(getPingToRover(), data, 6);
                 packet.setLength(data.length);
                 socket.send(packet);
             } catch (Exception e) {
                 if (connected) {
                     connected = false;
-                    System.out.println("\n" + TAG + "Connection to app lost because of " + e.getMessage());
+                    Util.println("\n" + TAG + "Connection to app lost because of " + e.getMessage());
                     update((byte) 50, (byte) 50);
                 }
             }
