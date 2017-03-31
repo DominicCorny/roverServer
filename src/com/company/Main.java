@@ -2,6 +2,8 @@ package com.company;
 
 import java.io.IOException;
 
+import static com.company.Util.println;
+
 public class Main {
     private static boolean consoleControl = false;
 
@@ -9,7 +11,7 @@ public class Main {
     private static ReceiverThread receiverThread;
 
     public static void main(String[] args) throws IOException {
-        Util.println("SERVER: Start");
+        println("SERVER: Start");
 
         senderThread = new SendCommands(3841, 1000);
         senderThread.start();

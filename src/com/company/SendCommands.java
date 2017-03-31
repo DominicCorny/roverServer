@@ -5,6 +5,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 
+import static com.company.Util.println;
+
 
 class SendCommands {
     private static final String TAG = "SENDER: ";
@@ -39,7 +41,7 @@ class SendCommands {
             DatagramPacket packet = new DatagramPacket(new byte[6], 6);
 
             while (true) {
-                if (ping == -1) Util.println(TAG + "Try to connect to rover");
+                if (ping == -1) println(TAG + "Try to connect to rover");
                 try {
                     socket.receive(packet);
                     if (ping == -1) {
@@ -49,7 +51,7 @@ class SendCommands {
                     ping = ((int) System.currentTimeMillis()) - Util.readInt(packet.getData(), 2);
                 } catch (Exception e) {
                     if (ping >= 0)
-                        Util.println("\n" + TAG + "Connection to rover lost because of " + e.getMessage());
+                        println("\n" + TAG + "Connection to rover lost because of " + e.getMessage());
                     ping = -1;
                 }
             }
@@ -68,7 +70,7 @@ class SendCommands {
             while (true) {
                 try {
                     packet.setSocketAddress(roverAddress);
-                    Util.println(TAG + "Sending data to Rover: speed = " + packet.getData()[0] + " steering = " + packet.getData()[1]);
+                    println(TAG + "Sending data to Rover: speed = " + packet.getData()[0] + " steering = " + packet.getData()[1]);
                     Util.putInt((int) System.currentTimeMillis(), packet.getData(), 2);
                     socket.send(packet);
                 } catch (IOException e) {

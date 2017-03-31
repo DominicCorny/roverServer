@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
+import static com.company.Util.println;
+
 public class ReceiveCommandsThread extends ReceiverThread {
 
     private DatagramSocket socket;
@@ -29,12 +31,12 @@ public class ReceiveCommandsThread extends ReceiverThread {
         boolean connected = false;
 
         while (true) {
-            if (!connected) Util.println(TAG + "Try to connect to app");
+            if (!connected) println(TAG + "Try to connect to app");
             try {
                 socket.receive(packet);
                 connected = true;
 
-                Util.println(TAG + "Received new data: speed = " + data[0] + " steering = " + data[1]);
+                println(TAG + "Received new data: speed = " + data[0] + " steering = " + data[1]);
                 update(data[0], data[1]);
 
                 Util.putInt(getPingToRover(), data, 6);
@@ -43,7 +45,7 @@ public class ReceiveCommandsThread extends ReceiverThread {
             } catch (Exception e) {
                 if (connected) {
                     connected = false;
-                    Util.println("\n" + TAG + "Connection to app lost because of " + e.getMessage());
+                    println("\n" + TAG + "Connection to app lost because of " + e.getMessage());
                     update((byte) 50, (byte) 50);
                 }
             }
