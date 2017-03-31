@@ -53,6 +53,7 @@ class SendCommands {
                     if (ping >= 0)
                         println("\n" + TAG + "Connection to rover lost because of " + e.getMessage());
                     ping = -1;
+                    Util.sleep(25);
                 }
             }
         }

@@ -48,6 +48,7 @@ public class ReceiveCommandsThread extends ReceiverThread {
                     println("\n" + TAG + "Connection to app lost because of " + e.getMessage());
                     update((byte) 50, (byte) 50);
                 }
+                Util.sleep(25);
             }
         }
     }
