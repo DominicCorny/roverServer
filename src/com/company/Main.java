@@ -5,16 +5,20 @@ import java.io.IOException;
 public class Main {
     private static boolean consoleControl = false;
 
+    private static SendCommands senderThread;
+    private static ReceiverThread receiverThread;
+
     public static void main(String[] args) throws IOException {
         System.out.println("SERVER: Start");
 
-        SendCommandsThread sendThread = new SendCommandsThread(3841, 1000);
-        sendThread.start();
+        senderThread = new SendCommands(3841, 1000);
+        senderThread.start();
 
         if (consoleControl) {
-            new ConsoleControlThread(sendThread::newData).start();
+            receiverThread = new ConsoleControlThread(senderThread);
         } else {
-            new ReceiveCommandsThread(3842, 1000, sendThread::newData).start();
+            receiverThread = new ReceiveCommandsThread(3842, 1000, senderThread);
         }
+        receiverThread.start();
     }
 }

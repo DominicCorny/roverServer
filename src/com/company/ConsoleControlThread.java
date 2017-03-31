@@ -6,8 +6,8 @@ import static java.lang.System.in;
 
 
 class ConsoleControlThread extends ReceiverThread {
-    ConsoleControlThread(Listener listener) {
-        super(listener);
+    ConsoleControlThread(SendCommands sender) {
+        super(sender);
     }
 
     @Override
@@ -16,7 +16,11 @@ class ConsoleControlThread extends ReceiverThread {
         byte speed, steering;
         while (true) {
             try {
-                System.out.println(TAG + "Gib die Geschwindigkeit ein(0-100)");
+                int ping = getPingToRover();
+                if (ping >= 0) {
+                    System.out.println(TAG + "Ping: " + ping);
+                }
+                System.out.println(TAG + "Gib die Geschwindigkeit ein (0-100)");
                 speed = scanner.nextByte();
                 System.out.println(TAG + "Gib die Lenkung ein (0-100)");
                 steering = scanner.nextByte();
