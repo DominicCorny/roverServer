@@ -77,7 +77,7 @@ class SendCommands {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if (!interrupted()) Util.sleep(50);
+                if (!interrupted()) Util.sleep(150);
             }
         }
 
