@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="roverServer">
+    <output-path>$PROJECT_DIR$/out/artifacts/roverServer</output-path>
+    <root id="archive" name="roverServer.jar">
+      <element id="module-output" name="roverServer" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
+    </root>
+  </artifact>
+</component>
